@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class JToonController {
 
-    @GetMapping("/")
-    public String hello(){
-        return "ㅎㅇ";
-    }
+//    @GetMapping("/")
+//    public String hello(){
+//        return "ㅎㅇ";
+//    }
 }
