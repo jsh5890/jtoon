@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import {RouterLink, RouterView} from "vue-router";
+import DayMenu from "@/components/DayMenu.vue";
+import Header from "@/components/Header.vue";
+
+components: {
+  Header, DayMenu
+}
 </script>
 
 <template>
-  <!--  <header>-->
-  <!--      <nav>-->
-  <!--        <RouterLink to="/">Home</RouterLink>-->
-  <!--        <RouterLink to="/about">About</RouterLink>-->
-  <!--      </nav>-->
-  <!--  </header>-->
-
-  <RouterView/>
+  <Header/>
+  <DayMenu/>
 </template>
 
 <style scoped>
