@@ -1,16 +1,22 @@
-<script setup lang="ts">
-import DayMenu from "@/components/DayMenu.vue";
+<script lang="ts">
 import Header from "@/components/Header.vue";
+import Content from "@/components/Content.vue";
 
-components: {
-  Header, DayMenu
-}
+export default {
+  components: {Content, Header},
+};
 </script>
 
 <template>
   <Header/>
-  <DayMenu/>
+  <Content/>
 </template>
 
 <style scoped>
+body {
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+  "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+  "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+  sans-serif;
+}
 </style>

@@ -4,6 +4,6 @@
 
 <template>
   <div>
-    <p>카카오</p>
+    네이버
   </div>
 </template>
