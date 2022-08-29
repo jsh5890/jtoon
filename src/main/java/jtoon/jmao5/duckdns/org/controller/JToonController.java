@@ -16,9 +16,8 @@ public class JToonController {
 
     private final JToonService jToonService;
 
-    @GetMapping("/webtoon/weekdayList")
+    @GetMapping("/jtoon/weekdayList/{domain}")
     public List<Map<String, String>> weekdayList(){
-
         return jToonService.weekdayList();
     }
 }

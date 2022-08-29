@@ -9,6 +9,8 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,23 +22,29 @@ public class JToonService {
         String Url = "https://comic.naver.com/webtoon/weekdayList?week=mon";
         Connection conn = Jsoup.connect(Url);
 
+        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+
         try {
             Document document = conn.get();
             Elements elements = document.getElementsByClass("img_list");
-//            System.out.println("elements : " + elements);
             Elements titleElements = elements.select("li");
             for (Element element : titleElements) {
-                Elements linkElements = element.select("div.thumb a");
+                Map<String, String> map = new HashMap<String, String>();
+                Elements aElement = element.select("div.thumb a");
+                String writer = element.select(".desc a").text();
 
-                log.info("linkElements : " + linkElements);
-                log.info("href : " + linkElements.attr("abs:href"));
-                log.info("title : " + linkElements.attr("abs:title"));
-                log.info("src : " + linkElements.attr("abs:src"));
+//                log.info("aElement : " + aElement);
+                map.put("href", aElement.attr("abs:href"));
+                map.put("title", aElement.attr("abs:title").replace("https://comic.naver.com/webtoon/",""));
+                map.put("src", aElement.select("img").attr("abs:src"));
+                map.put("writer", writer);
+                result.add(map);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getLocalizedMessage());
         }
 
-        return null;
+//        log.info(String.valueOf(result));
+        return result;
     }
 }
