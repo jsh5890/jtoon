@@ -18,8 +18,8 @@ import java.util.Map;
 @Slf4j
 public class JToonService {
 
-    public List<Map<String, String>> weekdayList(){
-        String Url = "https://comic.naver.com/webtoon/weekdayList?week=mon";
+    public List<Map<String, String>> weekdayList(String day) {
+        String Url = "https://comic.naver.com/webtoon/weekdayList?week=" + day;
         Connection conn = Jsoup.connect(Url);
 
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
@@ -28,12 +28,12 @@ public class JToonService {
             Document document = conn.get();
             Elements elements = document.getElementsByClass("img_list");
             Elements titleElements = elements.select("li");
+
             for (Element element : titleElements) {
                 Map<String, String> map = new HashMap<String, String>();
                 Elements aElement = element.select("div.thumb a");
                 String writer = element.select(".desc a").text();
 
-//                log.info("aElement : " + aElement);
                 map.put("href", aElement.attr("abs:href"));
                 map.put("title", aElement.attr("abs:title").replace("https://comic.naver.com/webtoon/",""));
                 map.put("src", aElement.select("img").attr("abs:src"));
@@ -43,7 +43,6 @@ public class JToonService {
         } catch (IOException e) {
             log.error(e.getLocalizedMessage());
         }
-
 //        log.info(String.valueOf(result));
         return result;
     }

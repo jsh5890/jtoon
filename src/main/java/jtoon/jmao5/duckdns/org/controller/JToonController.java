@@ -4,6 +4,7 @@ import jtoon.jmao5.duckdns.org.service.JToonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -16,8 +17,9 @@ public class JToonController {
 
     private final JToonService jToonService;
 
-    @GetMapping("/jtoon/weekdayList/{domain}")
-    public List<Map<String, String>> weekdayList(){
-        return jToonService.weekdayList();
+    @GetMapping("/jtoon/weekdayList/{day}")
+    public List<Map<String, String>> weekdayList(@PathVariable String day){
+//        log.info("jtoon day : " + day);
+        return jToonService.weekdayList(day);
     }
 }

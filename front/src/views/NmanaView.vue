@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import type {TabsPaneContext} from 'element-plus'
-
+import axios from "axios";
 
 const nowDay = () => {
   let now = new Date()
@@ -14,9 +14,27 @@ const nowDay = () => {
 
 const activeName = ref(nowDay())
 
+let day = ref(nowDay())
+
+const posts = ref([]);
+
 const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab.props.name)
+  posts.value = [];
+  day.value = <string>tab.props.name
+  axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
+    response.data.forEach((r: any) => {
+      // console.log(r)
+      posts.value.push(r);
+    });
+  })
 }
+
+axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
+  response.data.forEach((r: any) => {
+    // console.log(r)
+    posts.value.push(r);
+  });
+})
 
 </script>
 
@@ -24,114 +42,186 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
   <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
     <el-tab-pane label="월" name="mon">
       <ul class="img_list">
-
-        <li>
+        <li v-for="post in posts" :key="post.title">
           <div class="thumb">
-            <a href="/webtoon/list?titleId=758037&weekday=mon" title="참교육">
+            <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
               <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
-                   src="https://shared-comic.pstatic.net/thumb/webtoon/758037/thumbnail/thumbnail_IMAG10_a2297504-4912-4c7e-a5a8-524d6fc77103.jpg"
-                   width="83" height="90" title="참교육" alt="참교육">
-            </a>
+                   v-bind:src="post.src" v-bind:title="post.title" v-bind:alt="post.title">
+            </router-link>
           </div>
           <dl>
             <dt>
-              <a href="/webtoon/list?titleId=758037&weekday=mon" title="참교육">참교육</a>
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+                {{ post.title }}
+              </router-link>
+
             </dt>
             <dd class="desc">
-              채용택 / 한가람
+              {{ post.writer }}
             </dd>
-            <dd class="more"><a href="/webtoon/list?titleId=758037&weekday=mon">전체보기</a></dd>
-          </dl>
-        </li>
-
-        <li>
-          <div class="thumb">
-            <a href="/webtoon/list?titleId=648419&weekday=mon" title="뷰티풀 군바리">
-              <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
-                   src="https://shared-comic.pstatic.net/thumb/webtoon/648419/thumbnail/thumbnail_IMAG10_1421195d-13be-4cde-bcf9-0c78d51c5ea3.jpg"
-                   width="83" height="90" title="뷰티풀 군바리" alt="뷰티풀 군바리">
-            </a>
-          </div>
-          <dl>
-            <dt>
-              뷰티풀 군바리
-            </dt>
-            <dd class="desc">
-              <a href="#" onclick="return artistAction.viewArtist('648419', this)">설이 / 윤성원</a>
+            <dd class="more">
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }">전체보기</router-link>
             </dd>
-            <dd class="more"><a href="/webtoon/list?titleId=648419&weekday=mon">전체보기</a></dd>
-          </dl>
-        </li>
-
-        <li>
-          <div class="thumb">
-            <a href="/webtoon/list?titleId=183559&weekday=mon" title="신의 탑">
-              <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
-                   src="https://shared-comic.pstatic.net/thumb/webtoon/183559/thumbnail/thumbnail_IMAG10_9a752bec-9ebd-4214-9449-28cf4defc650.jpg"
-                   width="83" height="90" title="신의 탑" alt="신의 탑">
-            </a>
-          </div>
-          <dl>
-            <dt>
-              <a href="/webtoon/list?titleId=183559&weekday=mon" title="신의 탑">신의 탑</a>
-            </dt>
-
-            <dd class="desc">
-              SIU
-            </dd>
-            <dd class="more"><a href="/webtoon/list?titleId=183559&weekday=mon">전체보기</a></dd>
-          </dl>
-        </li>
-
-        <li>
-          <div class="thumb">
-            <a href="/webtoon/list?titleId=783052&weekday=mon" title="퀘스트지상주의">
-              <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
-                   src="https://shared-comic.pstatic.net/thumb/webtoon/783052/thumbnail/thumbnail_IMAG10_f455d5d8-c655-43d7-8966-94916efddcc7.jpg"
-                   width="83" height="90" title="퀘스트지상주의" alt="퀘스트지상주의">
-            </a>
-          </div>
-          <dl>
-            <dt>
-              <a href="/webtoon/list?titleId=783052&weekday=mon" title="퀘스트지상주의">퀘스트지상주의</a>
-            </dt>
-
-            <dd class="desc">
-              박태준 만화회사
-            </dd>
-            <dd class="more"><a href="/webtoon/list?titleId=783052&weekday=mon">전체보기</a></dd>
-          </dl>
-        </li>
-
-        <li>
-          <div class="thumb">
-            <a href="/webtoon/list?titleId=602910&weekday=mon" title="윈드브레이커">
-              <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
-                   src="https://shared-comic.pstatic.net/thumb/webtoon/602910/thumbnail/thumbnail_IMAG10_062ee6b8-cfc8-4699-a08a-80091aed33c7.jpg"
-                   width="83" height="90" title="윈드브레이커" alt="윈드브레이커">
-
-            </a>
-          </div>
-          <dl>
-            <dt>
-              <a href="/webtoon/list?titleId=602910&weekday=mon" title="윈드브레이커">윈드브레이커</a>
-            </dt>
-
-            <dd class="desc">
-              조용석
-            </dd>
-
-            <dd class="more"><a href="/webtoon/list?titleId=602910&weekday=mon">전체보기</a></dd>
           </dl>
         </li>
       </ul>
     </el-tab-pane>
-    <el-tab-pane label="화" name="tue">화</el-tab-pane>
-    <el-tab-pane label="수" name="wed">수</el-tab-pane>
-    <el-tab-pane label="목" name="thu">목</el-tab-pane>
-    <el-tab-pane label="금" name="fir">금</el-tab-pane>
-    <el-tab-pane label="토" name="sat">토</el-tab-pane>
-    <el-tab-pane label="일" name="sun">일</el-tab-pane>
+    <el-tab-pane label="화" name="tue">
+      <ul class="img_list">
+        <li v-for="post in posts" :key="post.title">
+          <div class="thumb">
+            <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+              <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
+                   v-bind:src="post.src" v-bind:title="post.title" v-bind:alt="post.alt">
+            </router-link>
+          </div>
+          <dl>
+            <dt>
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+                {{ post.title }}
+              </router-link>
+              <!--              <a v-bind:href="post.href" v-bind:title="post.title">{{ post.title }}</a>-->
+            </dt>
+            <dd class="desc">
+              {{ post.writer }}
+            </dd>
+            <dd class="more">
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }">전체보기</router-link>
+            </dd>
+          </dl>
+        </li>
+      </ul>
+    </el-tab-pane>
+    <el-tab-pane label="수" name="wed">
+      <ul class="img_list">
+        <li v-for="post in posts" :key="post.title">
+          <div class="thumb">
+            <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+              <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
+                   v-bind:src="post.src" v-bind:title="post.title" v-bind:alt="post.alt">
+            </router-link>
+          </div>
+          <dl>
+            <dt>
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+                {{ post.title }}
+              </router-link>
+              <!--              <a v-bind:href="post.href" v-bind:title="post.title">{{ post.title }}</a>-->
+            </dt>
+            <dd class="desc">
+              {{ post.writer }}
+            </dd>
+            <dd class="more">
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }">전체보기</router-link>
+            </dd>
+          </dl>
+        </li>
+      </ul>
+    </el-tab-pane>
+    <el-tab-pane label="목" name="thu">
+      <ul class="img_list">
+        <li v-for="post in posts" :key="post.title">
+          <div class="thumb">
+            <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+              <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
+                   v-bind:src="post.src" v-bind:title="post.title" v-bind:alt="post.alt">
+            </router-link>
+          </div>
+          <dl>
+            <dt>
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+                {{ post.title }}
+              </router-link>
+              <!--              <a v-bind:href="post.href" v-bind:title="post.title">{{ post.title }}</a>-->
+            </dt>
+            <dd class="desc">
+              {{ post.writer }}
+            </dd>
+            <dd class="more">
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }">전체보기</router-link>
+            </dd>
+          </dl>
+        </li>
+      </ul>
+    </el-tab-pane>
+    <el-tab-pane label="금" name="fri">
+      <ul class="img_list">
+        <li v-for="post in posts" :key="post.title">
+          <div class="thumb">
+            <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+              <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
+                   v-bind:src="post.src" v-bind:title="post.title" v-bind:alt="post.alt">
+            </router-link>
+          </div>
+          <dl>
+            <dt>
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+                {{ post.title }}
+              </router-link>
+              <!--              <a v-bind:href="post.href" v-bind:title="post.title">{{ post.title }}</a>-->
+            </dt>
+            <dd class="desc">
+              {{ post.writer }}
+            </dd>
+            <dd class="more">
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }">전체보기</router-link>
+            </dd>
+          </dl>
+        </li>
+      </ul>
+    </el-tab-pane>
+    <el-tab-pane label="토" name="sat">
+      <ul class="img_list">
+        <li v-for="post in posts" :key="post.title">
+          <div class="thumb">
+            <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+              <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
+                   v-bind:src="post.src" v-bind:title="post.title" v-bind:alt="post.alt">
+            </router-link>
+          </div>
+          <dl>
+            <dt>
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+                {{ post.title }}
+              </router-link>
+              <!--              <a v-bind:href="post.href" v-bind:title="post.title">{{ post.title }}</a>-->
+            </dt>
+            <dd class="desc">
+              {{ post.writer }}
+            </dd>
+            <dd class="more">
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }">전체보기</router-link>
+            </dd>
+          </dl>
+        </li>
+      </ul>
+    </el-tab-pane>
+    <el-tab-pane label="일" name="sun">
+      <ul class="img_list">
+        <li v-for="post in posts" :key="post.title">
+          <div class="thumb">
+            <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+              <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
+                   v-bind:src="post.src" v-bind:title="post.title" v-bind:alt="post.alt">
+            </router-link>
+          </div>
+          <dl>
+            <dt>
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+                {{ post.title }}
+              </router-link>
+              <!--              <a v-bind:href="post.href" v-bind:title="post.title">{{ post.title }}</a>-->
+            </dt>
+            <dd class="desc">
+              {{ post.writer }}
+            </dd>
+            <dd class="more">
+              <router-link :to="{ name: 'nDetail', params: { href: post.href } }">전체보기</router-link>
+            </dd>
+          </dl>
+        </li>
+      </ul>
+    </el-tab-pane>
   </el-tabs>
 </template>
 <style scoped>
@@ -167,6 +257,11 @@ body, input, textarea, select, button, table {
 .img_list li .thumb a {
   display: block;
   position: relative;
+}
+
+.img_list li .thumb a img {
+  width: 83px;
+  height: 90px;
 }
 
 a:hover {
