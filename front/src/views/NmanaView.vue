@@ -44,7 +44,7 @@ axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
 
 <template>
   <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-    <el-tab-pane  v-for=" (value , key) in daysWeek" v-bind:label="key" v-bind:name="value">
+    <el-tab-pane v-for=" (value , key) in daysWeek" v-bind:label="key" v-bind:name="value">
       <ul class="img_list">
         <li v-for="post in posts" :key="post.title">
           <div class="thumb">
@@ -70,7 +70,6 @@ axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
         </li>
       </ul>
     </el-tab-pane>
-
   </el-tabs>
 </template>
 <style scoped>
