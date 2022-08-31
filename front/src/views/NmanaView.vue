@@ -125,6 +125,4 @@ a:visited {
   color: black;
   text-decoration: none;
 }
-
-
 </style>
