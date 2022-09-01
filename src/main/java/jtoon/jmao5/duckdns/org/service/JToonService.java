@@ -46,4 +46,25 @@ public class JToonService {
 //        log.info(String.valueOf(result));
         return result;
     }
+
+    public List<Map<String, String>> list(String href) {
+
+        String Url = href;
+        Connection conn = Jsoup.connect(Url);
+
+        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+
+        try {
+            Document document = conn.get();
+            Elements elements = document.select("tr");
+
+            for (Element element : elements) {
+                log.info(String.valueOf(element));
+            }
+        } catch (IOException e) {
+            log.error(e.getLocalizedMessage());
+        }
+//        log.info(String.valueOf(result));
+        return result;
+    }
 }
