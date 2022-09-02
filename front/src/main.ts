@@ -6,6 +6,7 @@ import router from "./router";
 
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import './assets/style/comic.css'
 
 import 'bootstrap/dist/css/bootstrap-utilities.css'
 

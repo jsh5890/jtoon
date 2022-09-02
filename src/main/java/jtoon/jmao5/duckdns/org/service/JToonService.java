@@ -56,6 +56,7 @@ public class JToonService {
 
         try {
             Document document = conn.get();
+            log.info("오리진 : " + document);
             Elements elements = document.select("tr");
 
             for (Element element : elements) {
