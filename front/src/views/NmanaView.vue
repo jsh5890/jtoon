@@ -29,6 +29,7 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
   axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
     response.data.forEach((r: any) => {
       // console.log(r)
+      r['href'] = Buffer.from(r['href']).toString('base64')
       posts.value.push(r);
     });
   })
@@ -36,10 +37,8 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 
 axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
   response.data.forEach((r: any) => {
-
-    r['href'] = Buffer.from(r['href']).toString('base64')
-    console.log(r)
     // console.log(r)
+    r['href'] = Buffer.from(r['href']).toString('base64')
     posts.value.push(r);
   });
 })
