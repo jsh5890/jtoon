@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +21,24 @@ public class JToonController {
     private final JToonService jToonService;
 
     @GetMapping("/jtoon/weekdayList/{day}")
-    public List<Map<String, String>> weekdayList(@PathVariable String day){
+    public List<Map<String, String>> weekdayList(@PathVariable String day) {
 //        log.info("jtoon day : " + day);
         return jToonService.weekdayList(day);
     }
 
     @GetMapping("jtoon/list")
-    public List<Map<String, String>> list(@RequestParam("href") String href){
-        return jToonService.list(href);
+    public Map<String, Object> list(@RequestParam("href") String href) {
+        Map<String, Object> map = new HashMap<>();
+
+//        byte[] decoder = Base64.getDecoder().decode(href);
+//        String hrefDecoder = String.valueOf(decoder);
+
+        List<Map<String, String>> model = (List<Map<String, String>>) jToonService.list(href).getAttribute("detailList");
+        Map<String, String> result = (Map<String, String>) jToonService.list(href).getAttribute("info");
+
+        map.put("infoData", result);
+        map.put("detailList", model);
+
+        return map;
     }
 }

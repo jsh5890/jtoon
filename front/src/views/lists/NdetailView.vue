@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 
-import {defineProps} from 'vue';
+import {defineProps, ref} from 'vue';
 import axios from "axios";
+import {Buffer} from "buffer";
 
 const props = defineProps({
   href: {
@@ -9,35 +10,36 @@ const props = defineProps({
     require: true,
   },
 });
-console.log(props)
 
-axios.get("/api/jtoon/list/", {params: {href: props.href}}).then((response) => {
-  console.log(response)
+const info = ref({});
+const detailList = ref([]);
+const params = {params: {href: Buffer.from(props.href, 'base64').toString()}}
+axios.get("/api/jtoon/list/", params).then((response) => {
+  // console.log(response.data)
+  info.value = response.data.infoData
+
+  response.data.detailList.forEach((r) => {
+    detailList.value.push(r)
+  });
+}).catch(function (error) {
+  console.log(error);
 })
 
 </script>
 
 <template>
-
-  {{ props.href }}
-
   <div id="content" class="webtoon">
-
     <!-- body -->
     <!-- 상세 정보영역 -->
-    <div class="comicinfo" style="">
+    <div class="comicinfo">
       <div class="thumb">
-        <a href="/webtoon/list?titleId=798173">
-          <img
-              src="https://shared-comic.pstatic.net/thumb/webtoon/798173/thumbnail/thumbnail_IMAG06_bf76337a-aecc-4c07-88b9-c0f8d35115da.jpg"
-              title="이상한 변호사 우영우" alt="이상한 변호사 우영우" width="125" height="101">
-          <span class="mask"></span>
-        </a>
+        <img v-bind:src="info.infoImg" width="125" height="101">
       </div>
+
       <div class="detail">
         <h2>
-          <span class="title">이상한 변호사 우영우</span>
-          <span class="wrt_nm">유일 / 화음조,이예지</span>
+          <span class="title">{{ info.infoTitle }}</span>
+          <span class="wrt_nm">{{ info.infoWrtNm }}</span>
         </h2>
       </div>
     </div>
@@ -60,19 +62,17 @@ axios.get("/api/jtoon/list/", {params: {href: props.href}}).then((response) => {
       </thead>
       <tbody>
 
-      <tr>
+      <tr v-for="detailLists in detailList">
         <td>
-          <a href="/webtoon/detail?titleId=798173&amp;no=6&amp;weekday=thu">
-            <img src="https://shared-comic.pstatic.net/thumb/webtoon/798173/6/thumbnail_202x120_3eb0d799-defc-43c7-9ad8-936b4be38acc.jpg"
-                title="6화: 이상한 변호사 우영우 (6)" width="71" height="41">
-            <span class="mask"></span>
+          <a v-bind:href="detailLists.href">
+            <img v-bind:src="detailLists.src" width="71" height="41">
           </a>
         </td>
         <td class="title">
-          <a href="/webtoon/detail?titleId=798173&amp;no=6&amp;weekday=thu">6화: 이상한 변호사 우영우 (6)</a>
+          <a v-bind:href="detailLists.href">{{ detailLists.title }}</a>
         </td>
 
-        <td class="num">2022.08.31</td>
+        <td class="num">{{ detailLists.date }}</td>
       </tr>
 
       </tbody>

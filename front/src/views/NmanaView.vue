@@ -2,6 +2,7 @@
 import {ref} from 'vue'
 import type {TabsPaneContext} from 'element-plus'
 import axios from "axios";
+import {Buffer} from "buffer"
 
 const daysWeek = {
   일: 'sun', 월: 'mon', 화: 'tue', 수: 'wed', 목: 'thu', 금: 'fri', 토: 'sat'
@@ -35,6 +36,9 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 
 axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
   response.data.forEach((r: any) => {
+
+    r['href'] = Buffer.from(r['href']).toString('base64')
+    console.log(r)
     // console.log(r)
     posts.value.push(r);
   });
