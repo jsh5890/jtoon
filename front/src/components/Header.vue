@@ -14,8 +14,20 @@ const activeMenu = ref('/naver')
   </el-header>
 </template>
 <style scoped>
-.header {
-  padding: 0;
-  height: 60px;
+
+.el-header {
+  clear: both;
+  position: relative;
+  width: 980px;
+  min-height: 100%;
+  padding: 8px;
+  margin: 0 auto;
+}
+
+.el-menu {
+  width: 694px;
+}
+.el-menu--horizontal{
+  display: block;
 }
 </style>

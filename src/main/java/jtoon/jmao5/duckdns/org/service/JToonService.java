@@ -54,6 +54,7 @@ public class JToonService {
 
         Model model = new ConcurrentModel();
         try {
+            log.info("href : " + href);
             String Url = href;
             Connection conn = Jsoup.connect(Url);
 

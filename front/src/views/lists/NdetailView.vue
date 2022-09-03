@@ -28,6 +28,7 @@ axios.get("/api/jtoon/list/", params).then((response) => {
 </script>
 
 <template>
+  <div id="container">
   <div id="content" class="webtoon">
     <!-- body -->
     <!-- 상세 정보영역 -->
@@ -79,6 +80,7 @@ axios.get("/api/jtoon/list/", params).then((response) => {
     </table>
     <!-- //리스트 -->
 
+  </div>
   </div>
 </template>
 <style>
