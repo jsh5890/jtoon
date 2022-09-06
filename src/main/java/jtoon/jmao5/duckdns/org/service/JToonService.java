@@ -1,5 +1,6 @@
 package jtoon.jmao5.duckdns.org.service;
 
+import jtoon.jmao5.duckdns.org.common.util.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -61,7 +62,7 @@ public class JToonService {
             List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
 
             Document document = conn.get();
-//            log.info("오리진 : " + document);
+            log.info("오리진 : " + document);
             Elements titleElements = document.select("div.comicinfo");
             Map<String, String> infoMap = new HashMap<>();
             infoMap.put("infoImg", titleElements.select("div.thumb a img").attr("abs:src"));
@@ -84,6 +85,29 @@ public class JToonService {
                 map.put("date", date);
                 resultList.add(map);
             }
+
+            Map queryStringMap = CommonUtils.getQueryMap(elements.select("a").first().attr("abs:href"));
+
+            for (int i = 2; i <= Integer.parseInt((String) queryStringMap.get("no")) / 10 + 1; i++) {
+                String subUrl = href + "&page=" + i;
+                Connection subConn = Jsoup.connect(subUrl);
+                Document subDocument = subConn.get();
+                Elements subElements = subDocument.select("tbody tr:not([class])");
+
+                for (Element element : subElements) {
+                    Map<String, String> map = new HashMap<>();
+                    Elements aElement = element.select("td.title");
+                    String date = element.select("td.num").text();
+
+                    map.put("href", aElement.select("a").attr("abs:href"));
+                    map.put("title", aElement.select("a").text());
+                    map.put("src", element.select("img").attr("abs:src"));
+                    map.put("date", date);
+                    resultList.add(map);
+                }
+
+            }
+
             model.addAttribute("detailList", resultList);
 
         } catch (IOException e) {

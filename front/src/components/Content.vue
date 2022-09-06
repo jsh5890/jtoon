@@ -10,10 +10,9 @@
 </template>
 <style scoped>
 .el-main {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  overflow-y: hidden;
 }
-.el-main::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera*/
-}
+/*.el-main::-webkit-scrollbar {*/
+/*  display: none; !* Chrome, Safari, Opera*!*/
+/*}*/
 </style>

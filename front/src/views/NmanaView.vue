@@ -18,24 +18,11 @@ const nowDay = () => {
 }
 
 const activeName = ref(nowDay())
-
-let day = ref(nowDay())
+// let day = ref(nowDay())
 
 const posts = ref([]);
 
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  posts.value = [];
-  day.value = <string>tab.props.name
-  axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
-    response.data.forEach((r: any) => {
-      // console.log(r)
-      r['href'] = Buffer.from(r['href']).toString('base64')
-      posts.value.push(r);
-    });
-  })
-}
-
-axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
+axios.get(`/api/jtoon/weekdayList/${activeName.value}`).then((response) => {
   response.data.forEach((r: any) => {
     // console.log(r)
     r['href'] = Buffer.from(r['href']).toString('base64')
@@ -43,6 +30,17 @@ axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
   });
 })
 
+const handleClick = (tab: TabsPaneContext, event: Event) => {
+  posts.value = [];
+  activeName.value = <string>tab.props.name
+  axios.get("/api/jtoon/weekdayList/" + activeName.value).then((response) => {
+    response.data.forEach((r: any) => {
+      // console.log(r)
+      r['href'] = Buffer.from(r['href']).toString('base64')
+      posts.value.push(r);
+    });
+  })
+}
 </script>
 
 <template>
@@ -82,6 +80,7 @@ axios.get("/api/jtoon/weekdayList/" + day.value).then((response) => {
   </div>
 </template>
 <style scoped>
-
-
+.el-tabs__nav {
+  float: initial;
+}
 </style>
