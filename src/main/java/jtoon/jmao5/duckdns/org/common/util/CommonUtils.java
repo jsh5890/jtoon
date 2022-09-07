@@ -1,5 +1,9 @@
 package jtoon.jmao5.duckdns.org.common.util;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,5 +21,15 @@ public class CommonUtils {
             }
         }
         return map;
+    }
+
+    public static Document getCrawling(String url) {
+        try {
+            return Jsoup.connect(url)
+                    .timeout(2000)
+                    .get();
+        } catch (IOException e) {
+            throw new RuntimeException("crawling 실패");
+        }
     }
 }

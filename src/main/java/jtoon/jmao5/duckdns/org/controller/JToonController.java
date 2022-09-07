@@ -1,5 +1,6 @@
 package jtoon.jmao5.duckdns.org.controller;
 
+import jtoon.jmao5.duckdns.org.domain.jposts.JPosts;
 import jtoon.jmao5.duckdns.org.service.JToonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,17 +22,13 @@ public class JToonController {
     private final JToonService jToonService;
 
     @GetMapping("/jtoon/weekdayList/{day}")
-    public List<Map<String, String>> weekdayList(@PathVariable String day) {
-//        log.info("jtoon day : " + day);
+    public List<JPosts> weekdayList(@PathVariable String day) {
         return jToonService.weekdayList(day);
     }
 
     @GetMapping("jtoon/list")
     public Map<String, Object> list(@RequestParam("href") String href) {
         Map<String, Object> map = new HashMap<>();
-
-//        byte[] decoder = Base64.getDecoder().decode(href);
-//        String hrefDecoder = String.valueOf(decoder);
 
         List<Map<String, String>> model = (List<Map<String, String>>) jToonService.list(href).getAttribute("detailList");
         Map<String, String> result = (Map<String, String>) jToonService.list(href).getAttribute("info");
