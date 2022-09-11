@@ -2,6 +2,7 @@ package jtoon.jmao5.duckdns.org.service;
 
 import jtoon.jmao5.duckdns.org.common.util.CommonUtils;
 import jtoon.jmao5.duckdns.org.domain.jposts.JPosts;
+import jtoon.jmao5.duckdns.org.domain.jposts.Provider;
 import jtoon.jmao5.duckdns.org.repository.jposts.JPostsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +17,7 @@ import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,10 +31,22 @@ public class JToonService {
     public List<JPosts> weekdayList(String day) {
         Document document = CommonUtils.getCrawling("https://comic.naver.com/webtoon/weekdayList?week=" + day);
         List<JPosts> jPosts = document.getElementsByClass("img_list").select("li").stream()
-                .map(JPosts::of)
+                .map(e -> JPosts.builder()
+                        .dayOfWeek(day)
+                        .provider(Provider.valueOf("naver"))
+                        .title(e.select("dt a").text())
+                        .href(e.select("dt a").attr("abs:href"))
+                        .src(e.select("img").attr("abs:src"))
+                        .writer(e.select(".desc a").text())
+                        .build())
                 .collect(Collectors.toList());
 
-        jPostsRepository.saveAll(jPosts);
+        for (JPosts jPost : jPosts) {
+            if(!jPostsRepository.getListExist(jPost)){
+                jPostsRepository.save(jPost);
+            }
+        }
+
 
 //        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 //        Elements elements = document.getElementsByClass("img_list").select("li");
