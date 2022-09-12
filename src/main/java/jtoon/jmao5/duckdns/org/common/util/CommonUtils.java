@@ -1,5 +1,6 @@
 package jtoon.jmao5.duckdns.org.common.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -7,11 +8,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class CommonUtils {
 
     public static Map<String, String> getQueryMap(String query) {
-        String[] params = query.split("&");
-        Map<String, String> map = new HashMap<String, String>();
+
+//        log.info(" ? : " + query.substring(query.indexOf("?")+1));
+        String[] params = query.substring(query.indexOf("?") + 1).split("&");
+        Map<String, String> map = new HashMap<>();
         for (String param : params) {
             String[] p = param.split("=");
             String name = p[0];

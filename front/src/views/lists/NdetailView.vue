@@ -18,7 +18,7 @@ url = Buffer.from(props.href, 'base64').toString();
 const totalCnt = ref(0)
 axios.get("/api/jtoon/list/", {params: {href: url}}).then((response) => {
   // console.log(response.data)
-  info.value = response.data.infoData
+  info.value = response.data.info
 
   response.data.detailList.forEach((r) => {
     detailList.value.push(r)
@@ -41,7 +41,7 @@ axios.get("/api/jtoon/list/", {params: {href: url}}).then((response) => {
 
         <div class="detail">
           <h2>
-            <span class="title">{{ info.infoTitle }}</span>
+            <span class="title">{{ info.title }}</span>
             <span class="wrt_nm">{{ info.infoWrtNm }}</span>
           </h2>
         </div>

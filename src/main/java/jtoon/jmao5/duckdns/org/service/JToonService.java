@@ -2,21 +2,16 @@ package jtoon.jmao5.duckdns.org.service;
 
 import jtoon.jmao5.duckdns.org.common.util.CommonUtils;
 import jtoon.jmao5.duckdns.org.domain.jposts.JPosts;
-import jtoon.jmao5.duckdns.org.domain.jposts.Provider;
 import jtoon.jmao5.duckdns.org.repository.jposts.JPostsRepository;
+import jtoon.jmao5.duckdns.org.response.jposts.JPostsInfoResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ConcurrentModel;
-import org.springframework.ui.Model;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,14 +26,7 @@ public class JToonService {
     public List<JPosts> weekdayList(String day) {
         Document document = CommonUtils.getCrawling("https://comic.naver.com/webtoon/weekdayList?week=" + day);
         List<JPosts> jPosts = document.getElementsByClass("img_list").select("li").stream()
-                .map(e -> JPosts.builder()
-                        .dayOfWeek(day)
-                        .provider(Provider.valueOf("naver"))
-                        .title(e.select("dt a").text())
-                        .href(e.select("dt a").attr("abs:href"))
-                        .src(e.select("img").attr("abs:src"))
-                        .writer(e.select(".desc a").text())
-                        .build())
+                .map(r -> JPosts.of(r, day))
                 .collect(Collectors.toList());
 
         for (JPosts jPost : jPosts) {
@@ -46,8 +34,6 @@ public class JToonService {
                 jPostsRepository.save(jPost);
             }
         }
-
-
 //        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 //        Elements elements = document.getElementsByClass("img_list").select("li");
 //        for (Element element : elements) {
@@ -60,47 +46,54 @@ public class JToonService {
 //            map.put("writer", element.select(".desc a").text());
 //            result.add(map);
 //        }
-
         return jPosts;
     }
 
-    public Model list(String href) {
+    @Transactional
+    public Map<String, Object> jtoonlist(String href) {
+        Map<String, Object> result = new HashMap<>();
 
-        Model model = new ConcurrentModel();
-        try {
-            log.info("href : " + href);
-            String Url = href;
-            Connection conn = Jsoup.connect(Url);
+        Document document = CommonUtils.getCrawling(href);
 
-            List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
+        List<Map<String, String>> resultList = new ArrayList<>();
 
-            Document document = conn.get();
-//            log.info("오리진 : " + document);
-            Elements titleElements = document.select("div.comicinfo");
-            Map<String, String> infoMap = new HashMap<>();
-            infoMap.put("infoImg", titleElements.select("div.thumb a img").attr("abs:src"));
-            infoMap.put("infoTitle", titleElements.select("span.title").text());
-            infoMap.put("infoWrtNm", titleElements.select("span.wrt_nm").text());
+        Elements titleElements = document.select("div.comicinfo");
+        Long titleId = Long.valueOf(CommonUtils.getQueryMap(titleElements.select("a").first().attr("href")).get("titleId"));
+//        log.info("titleId : "+ titleId);
+        String infoImg = titleElements.select("div.thumb a img").attr("abs:src");
+        String infoWrtNm = titleElements.select("span.wrt_nm").text();
+        JPosts jPostsUpdate = jPostsRepository.findByTitleId(titleId);
+
+        jPostsUpdate.update(infoImg, infoWrtNm);
+
+//        Map<String, String> infoMap = new HashMap<>();
+//        infoMap.put("infoImg", infoImg);
+//        infoMap.put("infoTitle", titleElements.select("span.title").text());
+//        infoMap.put("infoWrtNm", infoWrtNm);
 //            log.info("infoMap : " + infoMap);
-            model.addAttribute("info", infoMap);
+        result.put("info", jPostsUpdate);
 
-            Elements elements = document.select("tbody tr:not([class])");
+        Elements elements = document.select("tbody tr:not([class])");
 
-            for (Element element : elements) {
+        for (Element element : elements) {
 //                log.info(String.valueOf(element));
-                Map<String, String> map = new HashMap<>();
-                Elements aElement = element.select("td.title");
-                String date = element.select("td.num").text();
+            Map<String, String> map = new HashMap<>();
+            Elements aElement = element.select("td.title");
+            String date = element.select("td.num").text();
 
-                map.put("href", aElement.select("a").attr("abs:href"));
-                map.put("title", aElement.select("a").text());
-                map.put("src", element.select("img").attr("abs:src"));
-                map.put("date", date);
-                resultList.add(map);
-            }
+            map.put("href", aElement.select("a").attr("abs:href"));
+            map.put("title", aElement.select("a").text());
+            map.put("src", element.select("img").attr("abs:src"));
+            map.put("date", date);
+            resultList.add(map);
+        }
 
-            Map queryStringMap = CommonUtils.getQueryMap(elements.select("a").first().attr("abs:href"));
-            int no = Integer.parseInt((String) queryStringMap.get("no")) / 10 + 1;
+        Map queryStringMap = CommonUtils.getQueryMap(elements.select("a").first().attr("href"));
+//        log.info("a : "+ elements.select("a").first());
+//        log.info("a href : "+ elements.select("a").first().attr("href"));
+//        log.info("queryStringMap : "+ queryStringMap);
+        int no = Integer.parseInt((String) queryStringMap.get("no")) / 10 + 1;
+        log.info("no : "+ no);
 //            for (int i = 2; i <= no; i++) {
 //                String subUrl = href + "&page=" + i;
 //                Connection subConn = Jsoup.connect(subUrl);
@@ -120,12 +113,8 @@ public class JToonService {
 //                }
 //            }
 
-            model.addAttribute("detailList", resultList);
+        result.put("detailList", resultList);
 
-        } catch (IOException e) {
-            log.error(e.getLocalizedMessage());
-        }
-        log.info(String.valueOf(model));
-        return model;
+        return result;
     }
 }

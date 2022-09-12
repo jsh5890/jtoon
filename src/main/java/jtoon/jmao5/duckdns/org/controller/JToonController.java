@@ -27,15 +27,7 @@ public class JToonController {
     }
 
     @GetMapping("jtoon/list")
-    public Map<String, Object> list(@RequestParam("href") String href) {
-        Map<String, Object> map = new HashMap<>();
-
-        List<Map<String, String>> model = (List<Map<String, String>>) jToonService.list(href).getAttribute("detailList");
-        Map<String, String> result = (Map<String, String>) jToonService.list(href).getAttribute("info");
-
-        map.put("infoData", result);
-        map.put("detailList", model);
-
-        return map;
+    public Map<String, Object> jtoonlist(@RequestParam("href") String href) {
+        return jToonService.jtoonlist(href);
     }
 }
