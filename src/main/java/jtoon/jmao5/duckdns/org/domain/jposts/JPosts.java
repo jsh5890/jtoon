@@ -6,12 +6,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -42,9 +40,11 @@ public class JPosts extends BaseTime {
 
     private String infoWrtNm;
 
+    private int totalCnt;
+
     @Builder
-    public JPosts(Provider provider, String writer, String title, String href, String src, String dayOfWeek,
-                  Long titleId, String infoImg, String infoWrtNm) {
+    public JPosts(Provider provider, String writer, String title, String href, String src,
+                  String dayOfWeek, Long titleId, String infoImg, String infoWrtNm, int totalCnt) {
         this.provider = provider;
         this.writer = writer;
         this.title = title;
@@ -54,6 +54,7 @@ public class JPosts extends BaseTime {
         this.titleId = titleId;
         this.infoImg = infoImg;
         this.infoWrtNm = infoWrtNm;
+        this.totalCnt = totalCnt;
     }
 
     public static JPosts of(Element element, String day) {
@@ -80,9 +81,10 @@ public class JPosts extends BaseTime {
         this.infoWrtNm = infoWrtNm;
     }
 
-    public void update(String infoImg, String infoWrtNm) {
+    public void update(String infoImg, String infoWrtNm, int totalCnt) {
         this.infoImg = infoImg;
         this.infoWrtNm = infoWrtNm;
+        this.totalCnt = totalCnt;
     }
 
 }

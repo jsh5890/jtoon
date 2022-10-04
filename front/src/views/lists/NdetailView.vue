@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-
 import {defineProps, ref} from 'vue';
-import axios from "axios";
+import axios from 'axios';
 import {Buffer} from "buffer";
 
 const props = defineProps({
@@ -13,19 +12,34 @@ const props = defineProps({
 
 const info = ref({});
 const detailList = ref([]);
+const currentPage = ref(1);
 let url = ref('');
 url = Buffer.from(props.href, 'base64').toString();
 const totalCnt = ref(0)
 axios.get("/api/jtoon/list/", {params: {href: url}}).then((response) => {
   // console.log(response.data)
   info.value = response.data.info
-
+  console.log(info.value)
   response.data.detailList.forEach((r) => {
     detailList.value.push(r)
   });
 }).catch(function (error) {
   console.log(error);
 })
+
+const page = (e) => {
+  console.log("e", e)
+  // 리스트 초기화
+  detailList.value = []
+  axios.get("/api/jtoon/listpage/", {params: {href: url, pageNo: e}}).then((response) => {
+    console.log(response.data)
+    response.data.forEach((r) => {
+      detailList.value.push(r)
+    });
+  }).catch(function (error) {
+    console.log(error);
+  })
+}
 
 </script>
 
@@ -82,14 +96,20 @@ axios.get("/api/jtoon/list/", {params: {href: url}}).then((response) => {
       </table>
       <!-- //리스트 -->
 
+    <el-pagination layout="prev, pager, next" v-bind:total="info.totalCnt"
+                   v-model:current-page="currentPage"
+                   @click.prevent="page(currentPage)"
+                   style="display: inline-flex"/>
     </div>
-    <el-pagination layout="prev, pager, next" :total="228" style="display: inline-flex"/>
+
+
   </div>
 </template>
 <style>
 .el-pagination {
   position: relative;
-  margin-top: 10px;
-  right: 170px;
+  margin-top: 15px;
+  width: 330px;
+  float: left;
 }
 </style>

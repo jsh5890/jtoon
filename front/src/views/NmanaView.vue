@@ -41,6 +41,7 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
     });
   })
 }
+
 </script>
 
 <template>
@@ -80,7 +81,5 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
   </div>
 </template>
 <style scoped>
-.el-tabs__nav {
-  float: initial;
-}
+
 </style>

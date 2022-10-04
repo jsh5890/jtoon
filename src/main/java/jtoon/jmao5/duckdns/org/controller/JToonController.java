@@ -1,13 +1,11 @@
 package jtoon.jmao5.duckdns.org.controller;
 
 import jtoon.jmao5.duckdns.org.domain.jposts.JPosts;
+import jtoon.jmao5.duckdns.org.response.jposts.JToonListPageRequest;
 import jtoon.jmao5.duckdns.org.service.JToonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
 import java.util.HashMap;
@@ -27,7 +25,13 @@ public class JToonController {
     }
 
     @GetMapping("jtoon/list")
-    public Map<String, Object> jtoonlist(@RequestParam("href") String href) {
-        return jToonService.jtoonlist(href);
+    public Map<String, Object> jtoonList(@RequestParam("href") String href) {
+        return jToonService.jtoonList(href);
+    }
+
+    @GetMapping("jtoon/listpage")
+    public List<Map<String, Object>> jtoonListPage(@RequestParam("href") String href
+            , @RequestParam("pageNo") String pageNo) {
+        return jToonService.jtoonListPage(href, pageNo);
     }
 }
