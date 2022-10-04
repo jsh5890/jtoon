@@ -60,14 +60,16 @@ public class JToonService {
 
         Elements titleElements = document.select("div.comicinfo");
         Elements elements = document.select("tbody tr:not([class])");
-
+//        log.info("elements : " + elements);
         Long titleId = Long.valueOf(CommonUtils.getQueryMap(titleElements.select("a").first().attr("href")).get("titleId"));
-//        log.info("titleId : "+ titleId);
+        String dayOfWeek = String.valueOf(CommonUtils.getQueryMap(elements.select("a").first().attr("href")).get("weekday"));
+//        log.info("dayOfWeek : "+ dayOfWeek);
+//        JPosts jPostsUpdate = jPostsRepository.findByTitleId(titleId);
+        JPosts jPostsUpdate = jPostsRepository.findByTitleId2(titleId, dayOfWeek);
+
         String infoImg = titleElements.select("div.thumb a img").attr("abs:src");
         String infoWrtNm = titleElements.select("span.wrt_nm").text();
         int totalCnt = Integer.parseInt(CommonUtils.getQueryMap(elements.select("a").first().attr("href")).get("no"));
-        JPosts jPostsUpdate = jPostsRepository.findByTitleId(titleId);
-
         jPostsUpdate.update(infoImg, infoWrtNm, totalCnt);
 
 //        Map<String, String> infoMap = new HashMap<>();

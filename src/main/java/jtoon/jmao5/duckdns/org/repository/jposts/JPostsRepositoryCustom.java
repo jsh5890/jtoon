@@ -6,5 +6,5 @@ public interface JPostsRepositoryCustom {
 
     Boolean getListExist(JPosts jPosts);
 
-    JPosts findByTitleId2(Long titleId);
+    JPosts findByTitleId2(Long titleId, String dayOfWeek);
 }
