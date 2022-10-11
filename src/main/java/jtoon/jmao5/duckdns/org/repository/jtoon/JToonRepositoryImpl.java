@@ -1,33 +1,32 @@
-package jtoon.jmao5.duckdns.org.repository.jposts;
+package jtoon.jmao5.duckdns.org.repository.jtoon;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jtoon.jmao5.duckdns.org.domain.jposts.JPosts;
+import jtoon.jmao5.duckdns.org.domain.jtoon.JToon;
 import lombok.RequiredArgsConstructor;
 
-import static jtoon.jmao5.duckdns.org.domain.jposts.QJPosts.jPosts;
+import static jtoon.jmao5.duckdns.org.domain.jtoon.QJToon.jToon;
 
 @RequiredArgsConstructor
-public class JPostsRepositoryImpl implements JPostsRepositoryCustom {
+public class JToonRepositoryImpl implements JToonRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Boolean getListExist(JPosts jPostsExist) {
+    public Boolean getListExist(JToon jToonExist) {
         Integer fetchOne = jpaQueryFactory
                 .selectOne()
-                .from(jPosts)
-                .where(jPosts.dayOfWeek.eq(jPostsExist.getDayOfWeek())
-                        , jPosts.provider.eq(jPostsExist.getProvider())
-                        , jPosts.title.eq(jPostsExist.getTitle())
-                        , jPosts.writer.eq(jPostsExist.getWriter())
+                .from(jToon)
+                .where(jToon.dayOfWeek.eq(jToonExist.getDayOfWeek())
+                        , jToon.provider.eq(jToonExist.getProvider())
+                        , jToon.title.eq(jToonExist.getTitle())
+                        , jToon.writer.eq(jToonExist.getWriter())
                 ).fetchFirst();
 
         return fetchOne != null;
     }
 
     @Override
-    public JPosts findByTitleId2(Long titleId, String dayOfWeek) {
+    public JToon findByTitleId2(Long titleId, String dayOfWeek) {
 //        return jpaQueryFactory.select(Projections.constructor(JPosts.class,
 //                                     jPosts.id
 //                                    , jPosts.infoImg
@@ -36,8 +35,8 @@ public class JPostsRepositoryImpl implements JPostsRepositoryCustom {
 //                                    .from(jPosts)
 //                                    .where(jPosts.titleId.eq(titleId), jPosts.dayOfWeek.eq(dayOfWeek))
 //                                    .fetchOne();
-        return jpaQueryFactory.selectFrom(jPosts)
-                                    .where(jPosts.titleId.eq(titleId), jPosts.dayOfWeek.eq(dayOfWeek))
+        return jpaQueryFactory.selectFrom(jToon)
+                                    .where(jToon.titleId.eq(titleId), jToon.dayOfWeek.eq(dayOfWeek))
                                     .fetchOne();
 
     }

@@ -1,4 +1,4 @@
-package jtoon.jmao5.duckdns.org.domain.jposts;
+package jtoon.jmao5.duckdns.org.domain.jtoon;
 
 import jtoon.jmao5.duckdns.org.common.util.CommonUtils;
 import jtoon.jmao5.duckdns.org.domain.config.BaseTime;
@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = @Index(name = "index_search", columnList = "titleId, writer, title"))
-public class JPosts extends BaseTime {
+public class JToon extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,8 +43,8 @@ public class JPosts extends BaseTime {
     private int totalCnt;
 
     @Builder
-    public JPosts(Provider provider, String writer, String title, String href, String src,
-                  String dayOfWeek, Long titleId, String infoImg, String infoWrtNm, int totalCnt) {
+    public JToon(Provider provider, String writer, String title, String href, String src,
+                 String dayOfWeek, Long titleId, String infoImg, String infoWrtNm, int totalCnt) {
         this.provider = provider;
         this.writer = writer;
         this.title = title;
@@ -57,13 +57,13 @@ public class JPosts extends BaseTime {
         this.totalCnt = totalCnt;
     }
 
-    public static JPosts of(Element element, String day) {
+    public static JToon of(Element element, String day) {
         Elements aTag = element.select("dt a");
         String href = aTag.attr("abs:href");
         String title = aTag.text();
         Long titleId = Long.valueOf(CommonUtils.getQueryMap(aTag.attr("href")).get("titleId"));
 
-        return JPosts.builder()
+        return JToon.builder()
                 .provider(Provider.valueOf("naver"))
                 .title(title)
                 .titleId(titleId)
@@ -75,7 +75,7 @@ public class JPosts extends BaseTime {
     }
 
     @Builder
-    public JPosts(Long id, String infoImg, String infoWrtNm) {
+    public JToon(Long id, String infoImg, String infoWrtNm) {
         this.id = id;
         this.infoImg = infoImg;
         this.infoWrtNm = infoWrtNm;

@@ -1,10 +1,8 @@
 package jtoon.jmao5.duckdns.org.service;
 
 import jtoon.jmao5.duckdns.org.common.util.CommonUtils;
-import jtoon.jmao5.duckdns.org.domain.jposts.JPosts;
-import jtoon.jmao5.duckdns.org.repository.jposts.JPostsRepository;
-import jtoon.jmao5.duckdns.org.response.jposts.JPostsInfoResponse;
-import jtoon.jmao5.duckdns.org.response.jposts.JToonListPageRequest;
+import jtoon.jmao5.duckdns.org.domain.jtoon.JToon;
+import jtoon.jmao5.duckdns.org.repository.jtoon.JToonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -21,18 +19,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JToonService {
 
-    private final JPostsRepository jPostsRepository;
+    private final JToonRepository jToonRepository;
 
     @Transactional
-    public List<JPosts> weekdayList(String day) {
+    public List<JToon> weekdayList(String day) {
         Document document = CommonUtils.getCrawling("https://comic.naver.com/webtoon/weekdayList?week=" + day);
-        List<JPosts> jPosts = document.getElementsByClass("img_list").select("li").stream()
-                .map(r -> JPosts.of(r, day))
+        List<JToon> jPosts = document.getElementsByClass("img_list").select("li").stream()
+                .map(r -> JToon.of(r, day))
                 .collect(Collectors.toList());
 
-        for (JPosts jPost : jPosts) {
-            if(!jPostsRepository.getListExist(jPost)){
-                jPostsRepository.save(jPost);
+        for (JToon jPost : jPosts) {
+            if(!jToonRepository.getListExist(jPost)){
+                jToonRepository.save(jPost);
             }
         }
 //        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
@@ -65,19 +63,19 @@ public class JToonService {
         String dayOfWeek = String.valueOf(CommonUtils.getQueryMap(elements.select("a").first().attr("href")).get("weekday"));
 //        log.info("dayOfWeek : "+ dayOfWeek);
 //        JPosts jPostsUpdate = jPostsRepository.findByTitleId(titleId);
-        JPosts jPostsUpdate = jPostsRepository.findByTitleId2(titleId, dayOfWeek);
+        JToon jToonUpdate = jToonRepository.findByTitleId2(titleId, dayOfWeek);
 
         String infoImg = titleElements.select("div.thumb a img").attr("abs:src");
         String infoWrtNm = titleElements.select("span.wrt_nm").text();
         int totalCnt = Integer.parseInt(CommonUtils.getQueryMap(elements.select("a").first().attr("href")).get("no"));
-        jPostsUpdate.update(infoImg, infoWrtNm, totalCnt);
+        jToonUpdate.update(infoImg, infoWrtNm, totalCnt);
 
 //        Map<String, String> infoMap = new HashMap<>();
 //        infoMap.put("infoImg", infoImg);
 //        infoMap.put("infoTitle", titleElements.select("span.title").text());
 //        infoMap.put("infoWrtNm", infoWrtNm);
 //            log.info("infoMap : " + infoMap);
-        result.put("info", jPostsUpdate);
+        result.put("info", jToonUpdate);
 
 
 

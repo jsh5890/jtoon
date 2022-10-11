@@ -1,4 +1,4 @@
-package jtoon.jmao5.duckdns.org.response.jposts;
+package jtoon.jmao5.duckdns.org.response.jtoon;
 
 
 import lombok.Getter;
