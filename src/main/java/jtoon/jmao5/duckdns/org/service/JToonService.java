@@ -2,7 +2,9 @@ package jtoon.jmao5.duckdns.org.service;
 
 import jtoon.jmao5.duckdns.org.common.util.CommonUtils;
 import jtoon.jmao5.duckdns.org.domain.jtoon.JToon;
+import jtoon.jmao5.duckdns.org.domain.jtoonlist.JToonList;
 import jtoon.jmao5.duckdns.org.repository.jtoon.JToonRepository;
+import jtoon.jmao5.duckdns.org.repository.jtoonlist.JToonListRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -21,16 +23,18 @@ public class JToonService {
 
     private final JToonRepository jToonRepository;
 
+    private final JToonListRepository jToonListRepository;
+
     @Transactional
     public List<JToon> weekdayList(String day) {
         Document document = CommonUtils.getCrawling("https://comic.naver.com/webtoon/weekdayList?week=" + day);
-        List<JToon> jPosts = document.getElementsByClass("img_list").select("li").stream()
+        List<JToon> jToons = document.getElementsByClass("img_list").select("li").stream()
                 .map(r -> JToon.of(r, day))
                 .collect(Collectors.toList());
 
-        for (JToon jPost : jPosts) {
-            if(!jToonRepository.getListExist(jPost)){
-                jToonRepository.save(jPost);
+        for (JToon jToon : jToons) {
+            if(!jToonRepository.getListExist(jToon)){
+                jToonRepository.save(jToon);
             }
         }
 //        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
@@ -45,7 +49,7 @@ public class JToonService {
 //            map.put("writer", element.select(".desc a").text());
 //            result.add(map);
 //        }
-        return jPosts;
+        return jToons;
     }
 
     @Transactional
@@ -75,43 +79,33 @@ public class JToonService {
 //        infoMap.put("infoTitle", titleElements.select("span.title").text());
 //        infoMap.put("infoWrtNm", infoWrtNm);
 //            log.info("infoMap : " + infoMap);
-        result.put("info", jToonUpdate);
 
 
+        List<JToonList> jToonLists = elements.stream()
+                .map(JToonList::of)
+                .collect(Collectors.toList());
 
-        for (Element element : elements) {
-//                log.info(String.valueOf(element));
-            Map<String, String> map = new HashMap<>();
-            Elements aElement = element.select("td.title");
-            String date = element.select("td.num").text();
-
-            map.put("href", aElement.select("a").attr("abs:href"));
-            map.put("title", aElement.select("a").text());
-            map.put("src", element.select("img").attr("abs:src"));
-            map.put("date", date);
-            resultList.add(map);
-        }
-
-        //            for (int i = 2; i <= no; i++) {
-//                String subUrl = href + "&page=" + i;
-//                Connection subConn = Jsoup.connect(subUrl);
-//                Document subDocument = subConn.get();
-//                Elements subElements = subDocument.select("tbody tr:not([class])");
-//
-//                for (Element element : subElements) {
-//                    Map<String, String> map = new HashMap<>();
-//                    Elements aElement = element.select("td.title");
-//                    String date = element.select("td.num").text();
-//
-//                    map.put("href", aElement.select("a").attr("abs:href"));
-//                    map.put("title", aElement.select("a").text());
-//                    map.put("src", element.select("img").attr("abs:src"));
-//                    map.put("date", date);
-//                    resultList.add(map);
-//                }
+        for (JToonList jToonList : jToonLists) {
+//            if(!jToonRepository.getListExist(jToonList)){
+            jToonUpdate.add(jToonList);
+            jToonListRepository.save(jToonList);
 //            }
-
-        result.put("detailList", resultList);
+        }
+//        resultList.add((Map<String, String>) jToonLists);
+//        for (Element element : elements) {
+////                log.info(String.valueOf(element));
+//            Map<String, String> map = new HashMap<>();
+//            Elements aElement = element.select("td.title");
+//            String date = element.select("td.num").text();
+//
+//            map.put("href", aElement.select("a").attr("abs:href"));
+//            map.put("title", aElement.select("a").text());
+//            map.put("src", element.select("img").attr("abs:src"));
+//            map.put("date", date);
+//            resultList.add(map);
+//        }
+        result.put("info", jToonUpdate);
+        result.put("detailList", jToonLists);
 
         return result;
     }

@@ -2,6 +2,7 @@ package jtoon.jmao5.duckdns.org.domain.jtoon;
 
 import jtoon.jmao5.duckdns.org.common.util.CommonUtils;
 import jtoon.jmao5.duckdns.org.domain.config.BaseTime;
+import jtoon.jmao5.duckdns.org.domain.jtoonlist.JToonList;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,11 +11,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(indexes = @Index(name = "index_search", columnList = "titleId, writer, title"))
+//@Table(indexes = @Index(name = "index_search", columnList = "titleId, writer, title"))
 public class JToon extends BaseTime {
 
     @Id
@@ -41,6 +44,14 @@ public class JToon extends BaseTime {
     private String infoWrtNm;
 
     private int totalCnt;
+
+//    @OneToMany(mappedBy = "jToon")
+//    private List<JToonList> jToonLists = new ArrayList<>();
+
+    public void add(JToonList jToonList){
+        jToonList.setJToon(this);
+//        getJToonLists().add(jToonList);
+    }
 
     @Builder
     public JToon(Provider provider, String writer, String title, String href, String src,
