@@ -86,10 +86,10 @@ public class JToonService {
                 .collect(Collectors.toList());
 
         for (JToonList jToonList : jToonLists) {
-//            if(!jToonRepository.getListExist(jToonList)){
-            jToonUpdate.add(jToonList);
-            jToonListRepository.save(jToonList);
-//            }
+            if(!jToonListRepository.getListExist(jToonList)){
+                jToonUpdate.add(jToonList);
+                jToonListRepository.save(jToonList);
+            }
         }
 //        resultList.add((Map<String, String>) jToonLists);
 //        for (Element element : elements) {
