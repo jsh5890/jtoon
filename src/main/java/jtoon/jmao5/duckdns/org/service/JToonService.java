@@ -85,12 +85,21 @@ public class JToonService {
                 .map(JToonList::of)
                 .collect(Collectors.toList());
 
-        for (JToonList jToonList : jToonLists) {
-            if(!jToonListRepository.getListExist(jToonList)){
-                jToonUpdate.add(jToonList);
-                jToonListRepository.save(jToonList);
+        for (int i = 0; i < jToonUpdate.getTotalCnt(); i++) {
+            Document dc = CommonUtils.getCrawling(href +"&page="+i);
+
+            List<JToonList> jtListSaves = dc.select("tbody tr:not([class])").stream()
+                    .map(JToonList::of)
+                    .collect(Collectors.toList());
+
+            for (JToonList jtListSave : jtListSaves) {
+                if(!jToonListRepository.getListExist(jtListSave)){
+                    jToonUpdate.add(jtListSave);
+                    jToonListRepository.save(jtListSave);
+                }
             }
         }
+
 //        resultList.add((Map<String, String>) jToonLists);
 //        for (Element element : elements) {
 ////                log.info(String.valueOf(element));
