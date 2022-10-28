@@ -1,10 +1,7 @@
-<script lang="ts">
+<script setup lang="ts">
 import Header from "@/components/Header.vue";
 import Content from "@/components/Content.vue";
 
-export default {
-  components: {Content, Header},
-};
 </script>
 
 <template>
