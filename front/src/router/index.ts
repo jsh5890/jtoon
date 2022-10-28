@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import NmanaView from "../views/NmanaView.vue";
 import KmanaView from "../views/KmanaView.vue";
 import NdetailView from "../views/lists/NdetailView.vue";
 
@@ -10,12 +8,12 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: HomeView,
+      component: () => import("../views/HomeView.vue"),
     },
     {
       path: "/naver",
       name: "naver",
-      component: NmanaView,
+      component: () => import("../views/NmanaView.vue"),
     },
     {
       path: "/kakao",

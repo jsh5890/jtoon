@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Header from "@/components/Header.vue"
 import {ref} from 'vue'
 import type {TabsPaneContext} from 'element-plus'
 import axios from "axios";
@@ -45,40 +46,49 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 </script>
 
 <template>
-  <div id="container">
-    <div id="content" class="webtoon">
-      <div class="list_area daily_img">
-        <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-          <el-tab-pane v-for=" (value , key) in daysWeek" v-bind:label="key" v-bind:name="value">
-            <ul class="img_list">
-              <li v-for="post in posts" :key="post.title">
-                <div class="thumb">
-                  <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
-                    <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
-                         v-bind:src="post.src" v-bind:title="post.title" v-bind:alt="post.title">
-                  </router-link>
-                </div>
-                <dl>
-                  <dt>
-                    <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
-                      {{ post.title }}
-                    </router-link>
+  <Header/>
+  <el-main>
+    <el-row>
+      <el-col>
+              
+        <div id="container">
+          <div id="content" class="webtoon">
+            <div class="list_area daily_img">
+              <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+                <el-tab-pane v-for=" (value , key) in daysWeek" v-bind:label="key" v-bind:name="value">
+                  <ul class="img_list">
+                    <li v-for="post in posts" :key="post.title">
+                      <div class="thumb">
+                        <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+                          <img onerror="this.src='https://ssl.pstatic.net/static/comic/images/migration/common/blank.gif'"
+                              v-bind:src="post.src" v-bind:title="post.title" v-bind:alt="post.title">
+                        </router-link>
+                      </div>
+                      <dl>
+                        <dt>
+                          <router-link :to="{ name: 'nDetail', params: { href: post.href } }" v-bind:title="post.title">
+                            {{ post.title }}
+                          </router-link>
 
-                  </dt>
-                  <dd class="desc">
-                    {{ post.writer }}
-                  </dd>
-                  <dd class="more">
-                    <router-link :to="{ name: 'nDetail', params: { href: post.href } }">전체보기</router-link>
-                  </dd>
-                </dl>
-              </li>
-            </ul>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-    </div>
-  </div>
+                        </dt>
+                        <dd class="desc">
+                          {{ post.writer }}
+                        </dd>
+                        <dd class="more">
+                          <router-link :to="{ name: 'nDetail', params: { href: post.href } }">전체보기</router-link>
+                        </dd>
+                      </dl>
+                    </li>
+                  </ul>
+                </el-tab-pane>
+              </el-tabs>
+            </div>
+          </div>
+        </div>
+
+      </el-col>
+    </el-row>
+  </el-main>
 </template>
 <style scoped>
 

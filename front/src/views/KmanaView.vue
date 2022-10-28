@@ -1,9 +1,12 @@
-<script lang="ts" setup>
-
+<script setup lang="ts">
+import Header from "@/components/Header.vue"
 </script>
 
 <template>
-  카카오
+  <Header/>
+  <div>
+    카카오페이지
+  </div>
 </template>
 <style>
 
